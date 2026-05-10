@@ -23,7 +23,7 @@
 | Spring Boot 3 | Webアプリケーションフレームワーク |
 | Spring Data JPA | データベース操作（ORM） |
 | Lombok | ボイラープレートコード削減 |
-| Maven | 依存関係管理・ビルドツール |
+| Gradle（Kotlin DSL） | 依存関係管理・ビルドツール |
 | PostgreSQL JDBC Driver | PostgreSQLへの接続ドライバ |
 
 ### データベース
