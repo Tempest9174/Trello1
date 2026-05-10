@@ -24,12 +24,13 @@
 | Spring Data JPA | データベース操作（ORM） |
 | Lombok | ボイラープレートコード削減 |
 | Maven | 依存関係管理・ビルドツール |
+| PostgreSQL JDBC Driver | PostgreSQLへの接続ドライバ |
 
 ### データベース
 
 | 技術 | 役割 |
 |------|------|
-| MySQL / MariaDB | データの永続化 |
+| PostgreSQL | データの永続化 |
 
 ---
 

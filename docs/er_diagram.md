@@ -1,6 +1,6 @@
 # E-R図（データ設計書）
 
-データベース：MySQL / MariaDB
+データベース：PostgreSQL
 
 ---
 
