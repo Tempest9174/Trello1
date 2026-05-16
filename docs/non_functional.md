@@ -19,8 +19,8 @@
 
 | 技術 | 役割 |
 |------|------|
-| Java 17 | プログラミング言語 |
-| Spring Boot 3 | Webアプリケーションフレームワーク |
+| Java 25（コンパイル） / Java 21（Gradle実行） | プログラミング言語 |
+| Spring Boot 4.0.6 | Webアプリケーションフレームワーク |
 | Spring Data JPA | データベース操作（ORM） |
 | Lombok | ボイラープレートコード削減 |
 | Gradle（Kotlin DSL） | 依存関係管理・ビルドツール |
@@ -50,7 +50,26 @@
 
 ---
 
-## 3. 利用環境の制約
+## 3. Javaツールチェーン構成
+
+Gradleとコンパイル対象のJavaバージョンを分離する「ツールチェーン」方式を採用しています。
+
+| 役割 | バージョン | 場所 |
+|------|-----------|------|
+| Gradle実行JVM | Java 21（`JAVA_HOME`） | `C:\Program Files\Eclipse Adoptium\jdk-21.0.1.12-hotspot` |
+| ソースコードのコンパイル | Java 25（ツールチェーン） | `D:\`（Oracle JDK 25.0.3） |
+
+**なぜこの構成か：** Gradle 8.14 + Kotlin DSL は Java 25 上で直接動作させると
+クラスパスの競合が発生するため、Gradle 自体は Java 21 で動かしつつ、
+ソースのコンパイルのみ Java 25 を使うことで両立しています。
+
+設定ファイル：
+- `backend/build.gradle.kts` → `java { toolchain { languageVersion = JavaLanguageVersion.of(25) } }`
+- `backend/gradle.properties` → `org.gradle.java.installations.paths=D:\\`
+
+---
+
+## 4. 利用環境の制約
 
 | 項目 | 内容 |
 |------|------|

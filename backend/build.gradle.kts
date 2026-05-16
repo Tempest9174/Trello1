@@ -8,7 +8,9 @@ group = "com.taskmanagement"
 version = "0.0.1-SNAPSHOT"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_21  // Java 25インストール後にVERSION_25へ戻す
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(25)
+    }
 }
 
 configurations {

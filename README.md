@@ -24,11 +24,11 @@
 - Axios（API通信）
 
 **バックエンド（サーバー）**
-- Java 17 + Spring Boot 3
+- Java 25（コンパイル）/ Java 21（Gradle実行）+ Spring Boot 4.0.6
 - Spring Data JPA + Lombok
 
 **データベース**
-- MySQL / MariaDB
+- PostgreSQL 16
 
 ---
 
@@ -36,31 +36,35 @@
 
 ### 前提条件
 
-- Java 17 以上がインストールされていること
+- Java 21 および Java 25 がインストールされていること（`JAVA_HOME` は Java 21 に設定）
 - Node.js 18 以上がインストールされていること
-- MySQL または MariaDB が起動していること
+- Docker Desktop が起動していること
 
-### 1. データベースの準備
+### 1. データベースの起動（Docker）
 
-MySQL にログインして、データベースとテーブルを作成してください。
+`.env` ファイルをプロジェクトルートに作成して、以下の内容を記述してください。
 
-```sql
-CREATE DATABASE trello_clone CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+```env
+POSTGRES_DB=taskmanagement
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=postgres
+PGADMIN_EMAIL=admin@example.com
+PGADMIN_PASSWORD=admin
 ```
 
-その後、`schema.sql` を実行してテーブルを作成します。
+その後、Docker Compose でPostgreSQLを起動します。
 
 ```bash
-mysql -u root -p trello_clone < schema.sql
+docker-compose up -d
 ```
 
-`SHOW TABLES;` で5つのテーブルが表示されれば完了です。
+`http://localhost:5050` でpgAdmin（DB管理画面）にアクセスできます。
 
 ### 2. バックエンドの起動
 
 ```bash
 cd backend
-mvn spring-boot:run
+./gradlew bootRun
 ```
 
 `http://localhost:8080/api/boards` にアクセスして `[]` が返れば正常に起動しています。
