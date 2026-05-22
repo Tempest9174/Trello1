@@ -49,6 +49,7 @@ Issue を作成せずにブランチを切ることは禁止。
 - PR のベースブランチは `develop`（develop → main の PR のみ例外）
 - PR タイトルには対応する Issue 番号を含める（例: `#12 カードAPI実装`）
 - PR 作成時に Issue を Close するリンクを本文に記載する（`Closes #<番号>`）
+- `Closes #` は main へのマージ時のみ自動クローズ。develop へのマージ後は `gh issue close <番号>` で手動クローズする
 
 ---
 
@@ -65,3 +66,18 @@ Issue を作成せずにブランチを切ることは禁止。
 - 通常作業ブランチ: `develop`
 - 本番ブランチ: `main`
 - 技術スタック: Java 21 + Spring Boot / React + TypeScript / PostgreSQL
+
+---
+
+## 7. ポート割り当て（固定）
+
+| サービス | ポート | 設定ファイル |
+|---------|--------|------------|
+| バックエンド（Spring Boot） | 8080 | `backend/src/main/resources/application.yml` |
+| フロントエンド（Vite） | 5173 | `frontend/vite.config.ts` |
+| PostgreSQL（ホスト側） | 5433 | `docker-compose.yml` |
+| pgAdmin | 5050 | `docker-compose.yml` |
+
+- ポートは変更禁止。競合する場合は使用中のプロセスを停止すること
+- フロントエンドは `strictPort: true` により、5173 が使用中なら自動で別ポートに切り替えず起動エラーになる
+- 起動前に `/check-ports` コマンドで各ポートの空き状況を確認できる
