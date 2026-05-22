@@ -1,3 +1,4 @@
+import { Toaster } from 'react-hot-toast';
 import { TaskList } from './components/TaskList';
 
 function App() {
@@ -11,6 +12,8 @@ function App() {
         <h2 className="text-lg font-semibold text-gray-700 mb-4">タスク一覧</h2>
         <TaskList />
       </main>
+
+      <Toaster position="bottom-right" />
     </div>
   );
 }
