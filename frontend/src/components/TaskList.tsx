@@ -1,8 +1,14 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import type { Task } from '../types/Task';
+import type { Task, Status } from '../types/Task';
 import { TaskCard } from './TaskCard';
 import { TaskForm } from './TaskForm';
+
+const COLUMNS: { status: Status; label: string; color: string }[] = [
+  { status: 'TODO',        label: '未着手', color: 'bg-gray-100 text-gray-600' },
+  { status: 'IN_PROGRESS', label: '進行中', color: 'bg-blue-100 text-blue-700' },
+  { status: 'DONE',        label: '完了',   color: 'bg-emerald-100 text-emerald-700' },
+];
 
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -53,17 +59,28 @@ export function TaskList() {
         </button>
       )}
 
-      {tasks.length === 0 ? (
-        <div className="flex justify-center items-center py-16">
-          <p className="text-gray-400">タスクがありません</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {tasks.map((task) => (
-            <TaskCard key={task.id} task={task} />
-          ))}
-        </div>
-      )}
+      <div className="grid grid-cols-3 gap-6">
+        {COLUMNS.map(({ status, label, color }) => {
+          const grouped = tasks.filter((t) => t.status === status);
+          return (
+            <div key={status}>
+              <div className="flex items-center gap-2 mb-3">
+                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>
+                  {label}
+                </span>
+                <span className="text-xs text-gray-400">{grouped.length}</span>
+              </div>
+              <div className="flex flex-col gap-3">
+                {grouped.length === 0 ? (
+                  <p className="text-gray-300 text-sm text-center py-8">なし</p>
+                ) : (
+                  grouped.map((task) => <TaskCard key={task.id} task={task} />)
+                )}
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

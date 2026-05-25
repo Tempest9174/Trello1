@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
-import { Task } from '../types/Task';
+import type { Task } from '../types/Task';
 
 type Props = {
   onCreated: (task: Task) => void;
@@ -71,6 +71,7 @@ export function TaskForm({ onCreated, onCancel }: Props) {
             優先度 <span className="text-red-500">*</span>
           </label>
           <select
+            title="優先度"
             value={priority}
             onChange={(e) => setPriority(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
@@ -85,6 +86,7 @@ export function TaskForm({ onCreated, onCancel }: Props) {
           <label className="block text-sm font-medium text-gray-600 mb-1">期限日</label>
           <input
             type="date"
+            title="期限日"
             value={dueDate}
             onChange={(e) => setDueDate(e.target.value)}
             className="w-full border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
