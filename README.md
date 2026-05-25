@@ -17,11 +17,12 @@
 ## 使用技術
 
 **フロントエンド（画面）**
-- React + TypeScript + Vite
-- Tailwind CSS
-- dnd-kit（ドラッグ＆ドロップ）
-- Zustand（状態管理）
-- Axios（API通信）
+- React 19.2.6 + TypeScript 6.0.2 + Vite 8.0.12
+- Tailwind CSS 3.4.19
+- Axios 1.16.1（API通信）
+- react-hot-toast 2.6.0（通知）
+- dnd-kit（ドラッグ＆ドロップ・導入予定）
+
 
 **バックエンド（サーバー）**
 - Java 25（コンパイル）/ Java 21（Gradle実行）+ Spring Boot 4.0.6
@@ -67,7 +68,7 @@ cd backend
 ./gradlew bootRun
 ```
 
-`http://localhost:8080/api/boards` にアクセスして `[]` が返れば正常に起動しています。
+`http://localhost:8080/api/tasks` にアクセスして `[]` が返れば正常に起動しています。
 
 ### 3. フロントエンドの起動
 

@@ -1,6 +1,6 @@
 # E-R図（データ設計書）
 
-データベース：PostgreSQL
+データベース：PostgreSQL 16
 
 ---
 
