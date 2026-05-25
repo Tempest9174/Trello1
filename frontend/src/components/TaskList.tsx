@@ -3,6 +3,7 @@ import axios from 'axios';
 import type { Task, Status } from '../types/Task';
 import { TaskCard } from './TaskCard';
 import { TaskForm } from './TaskForm';
+import { TaskEditModal } from './TaskEditModal';
 
 const COLUMNS: { status: Status; label: string; color: string }[] = [
   { status: 'TODO',        label: '未着手', color: 'bg-gray-100 text-gray-600' },
@@ -15,6 +16,7 @@ export function TaskList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [editingTask, setEditingTask] = useState<Task | null>(null);
 
   useEffect(() => {
     axios
@@ -27,6 +29,11 @@ export function TaskList() {
   const handleCreated = (task: Task) => {
     setTasks((prev) => [...prev, task]);
     setShowForm(false);
+  };
+
+  const handleUpdated = (updated: Task) => {
+    setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    setEditingTask(null);
   };
 
   if (loading) {
@@ -46,7 +53,7 @@ export function TaskList() {
   }
 
   return (
-    <div>
+    <>
       {showForm ? (
         <TaskForm onCreated={handleCreated} onCancel={() => setShowForm(false)} />
       ) : (
@@ -74,13 +81,23 @@ export function TaskList() {
                 {grouped.length === 0 ? (
                   <p className="text-gray-300 text-sm text-center py-8">なし</p>
                 ) : (
-                  grouped.map((task) => <TaskCard key={task.id} task={task} />)
+                  grouped.map((task) => (
+                    <TaskCard key={task.id} task={task} onClick={() => setEditingTask(task)} />
+                  ))
                 )}
               </div>
             </div>
           );
         })}
       </div>
-    </div>
+
+      {editingTask && (
+        <TaskEditModal
+          task={editingTask}
+          onUpdated={handleUpdated}
+          onClose={() => setEditingTask(null)}
+        />
+      )}
+    </>
   );
 }

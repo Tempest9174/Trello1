@@ -5,7 +5,9 @@ import com.taskmanagement.dto.TaskResponse;
 import com.taskmanagement.entity.Task;
 import com.taskmanagement.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -34,6 +36,17 @@ public class TaskService {
                 .createdAt(LocalDateTime.now())
                 .updatedAt(LocalDateTime.now())
                 .build();
+        return TaskResponse.from(taskRepository.save(task));
+    }
+
+    public TaskResponse updateTask(Long id, TaskRequest request) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        task.setTitle(request.title());
+        task.setDescription(request.description());
+        task.setPriority(request.priority());
+        task.setDueDate(request.dueDate());
+        task.setUpdatedAt(LocalDateTime.now());
         return TaskResponse.from(taskRepository.save(task));
     }
 }
