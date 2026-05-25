@@ -26,11 +26,15 @@ const statusLabel: Record<Status, string> = {
 
 type Props = {
   task: Task;
+  onClick: () => void;
 };
 
-export function TaskCard({ task }: Props) {
+export function TaskCard({ task, onClick }: Props) {
   return (
-    <div className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow">
+    <div
+      className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow cursor-pointer"
+      onClick={onClick}
+    >
       <div className="flex items-center gap-2 mb-2">
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${priorityStyle[task.priority]}`}>
           {priorityLabel[task.priority]}
