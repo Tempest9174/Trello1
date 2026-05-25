@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
+import { DndContext, useDroppable } from '@dnd-kit/core';
+import type { DragEndEvent } from '@dnd-kit/core';
 import type { Task, Status } from '../types/Task';
 import { TaskCard } from './TaskCard';
 import { TaskForm } from './TaskForm';
@@ -10,6 +12,44 @@ const COLUMNS: { status: Status; label: string; color: string }[] = [
   { status: 'IN_PROGRESS', label: '進行中', color: 'bg-blue-100 text-blue-700' },
   { status: 'DONE',        label: '完了',   color: 'bg-emerald-100 text-emerald-700' },
 ];
+
+function DroppableColumn({
+  status,
+  label,
+  color,
+  tasks,
+  onClickTask,
+}: {
+  status: Status;
+  label: string;
+  color: string;
+  tasks: Task[];
+  onClickTask: (task: Task) => void;
+}) {
+  const { setNodeRef, isOver } = useDroppable({ id: status });
+  return (
+    <div
+      ref={setNodeRef}
+      className={`min-h-32 rounded-lg transition-colors ${isOver ? 'bg-blue-50' : ''}`}
+    >
+      <div className="flex items-center gap-2 mb-3">
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>
+          {label}
+        </span>
+        <span className="text-xs text-gray-400">{tasks.length}</span>
+      </div>
+      <div className="flex flex-col gap-3">
+        {tasks.length === 0 ? (
+          <p className="text-gray-300 text-sm text-center py-8">なし</p>
+        ) : (
+          tasks.map((task) => (
+            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} />
+          ))
+        )}
+      </div>
+    </div>
+  );
+}
 
 export function TaskList() {
   const [tasks, setTasks] = useState<Task[]>([]);
@@ -34,6 +74,22 @@ export function TaskList() {
   const handleUpdated = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
     setEditingTask(null);
+  };
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over) return;
+    const taskId = active.id as number;
+    const newStatus = over.id as Status;
+    const task = tasks.find((t) => t.id === taskId);
+    if (!task || task.status === newStatus) return;
+
+    setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: newStatus } : t)));
+    axios
+      .patch(`http://localhost:8080/api/tasks/${taskId}/status`, { status: newStatus })
+      .catch(() => {
+        setTasks((prev) => prev.map((t) => (t.id === taskId ? { ...t, status: task.status } : t)));
+      });
   };
 
   if (loading) {
@@ -66,30 +122,20 @@ export function TaskList() {
         </button>
       )}
 
-      <div className="grid grid-cols-3 gap-6">
-        {COLUMNS.map(({ status, label, color }) => {
-          const grouped = tasks.filter((t) => t.status === status);
-          return (
-            <div key={status}>
-              <div className="flex items-center gap-2 mb-3">
-                <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>
-                  {label}
-                </span>
-                <span className="text-xs text-gray-400">{grouped.length}</span>
-              </div>
-              <div className="flex flex-col gap-3">
-                {grouped.length === 0 ? (
-                  <p className="text-gray-300 text-sm text-center py-8">なし</p>
-                ) : (
-                  grouped.map((task) => (
-                    <TaskCard key={task.id} task={task} onClick={() => setEditingTask(task)} />
-                  ))
-                )}
-              </div>
-            </div>
-          );
-        })}
-      </div>
+      <DndContext onDragEnd={handleDragEnd}>
+        <div className="grid grid-cols-3 gap-6">
+          {COLUMNS.map(({ status, label, color }) => (
+            <DroppableColumn
+              key={status}
+              status={status}
+              label={label}
+              color={color}
+              tasks={tasks.filter((t) => t.status === status)}
+              onClickTask={setEditingTask}
+            />
+          ))}
+        </div>
+      </DndContext>
 
       {editingTask && (
         <TaskEditModal
