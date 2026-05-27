@@ -19,12 +19,14 @@ function DroppableColumn({
   color,
   tasks,
   onClickTask,
+  onDeleteTask,
 }: {
   status: Status;
   label: string;
   color: string;
   tasks: Task[];
   onClickTask: (task: Task) => void;
+  onDeleteTask: (id: number) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
@@ -43,7 +45,7 @@ function DroppableColumn({
           <p className="text-gray-300 text-sm text-center py-8">なし</p>
         ) : (
           tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} />
+            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} onDelete={() => onDeleteTask(task.id)} />
           ))
         )}
       </div>
@@ -73,6 +75,11 @@ export function TaskList() {
 
   const handleUpdated = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    setEditingTask(null);
+  };
+
+  const handleDeleted = (id: number) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
     setEditingTask(null);
   };
 
@@ -132,6 +139,7 @@ export function TaskList() {
               color={color}
               tasks={tasks.filter((t) => t.status === status)}
               onClickTask={setEditingTask}
+              onDeleteTask={handleDeleted}
             />
           ))}
         </div>
@@ -141,6 +149,7 @@ export function TaskList() {
         <TaskEditModal
           task={editingTask}
           onUpdated={handleUpdated}
+          onDeleted={() => handleDeleted(editingTask.id)}
           onClose={() => setEditingTask(null)}
         />
       )}

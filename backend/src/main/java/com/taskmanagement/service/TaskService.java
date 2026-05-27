@@ -57,4 +57,9 @@ public class TaskService {
         task.setUpdatedAt(LocalDateTime.now());
         return TaskResponse.from(taskRepository.save(task));
     }
+
+    public void deleteTask(Long id) {
+        if (!taskRepository.existsById(id)) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        taskRepository.deleteById(id);
+    }
 }
