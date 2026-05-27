@@ -49,4 +49,12 @@ public class TaskService {
         task.setUpdatedAt(LocalDateTime.now());
         return TaskResponse.from(taskRepository.save(task));
     }
+
+    public TaskResponse updateStatus(Long id, String status) {
+        Task task = taskRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        task.setStatus(status);
+        task.setUpdatedAt(LocalDateTime.now());
+        return TaskResponse.from(taskRepository.save(task));
+    }
 }

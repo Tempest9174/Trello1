@@ -1,5 +1,6 @@
 package com.taskmanagement.controller;
 
+import com.taskmanagement.dto.StatusRequest;
 import com.taskmanagement.dto.TaskRequest;
 import com.taskmanagement.dto.TaskResponse;
 import com.taskmanagement.service.TaskService;
@@ -32,5 +33,11 @@ public class TaskController {
     public TaskResponse updateTask(@PathVariable Long id,
                                    @RequestBody @Valid TaskRequest request) {
         return taskService.updateTask(id, request);
+    }
+
+    @PatchMapping("/{id}/status")
+    public TaskResponse updateStatus(@PathVariable Long id,
+                                     @RequestBody @Valid StatusRequest request) {
+        return taskService.updateStatus(id, request.status());
     }
 }
