@@ -82,6 +82,59 @@ npm run dev
 
 ---
 
+## API仕様
+
+ベースURL: `http://localhost:8080`
+
+| メソッド | エンドポイント | 説明 | ステータス |
+|---|---|---|---|
+| GET | `/api/tasks` | タスク一覧取得 | 200 |
+| POST | `/api/tasks` | タスク作成 | 201 |
+| PUT | `/api/tasks/{id}` | タスク更新 | 200 |
+| PATCH | `/api/tasks/{id}/status` | ステータス変更 | 200 |
+| DELETE | `/api/tasks/{id}` | タスク削除 | 204 |
+
+### リクエスト形式
+
+**タスク作成・更新（POST / PUT）**
+```json
+{
+  "title": "タスクタイトル",
+  "description": "説明（任意）",
+  "priority": "HIGH",
+  "dueDate": "2026-06-30"
+}
+```
+
+> `priority` は `HIGH` / `MEDIUM` / `LOW` のいずれか。`dueDate` は省略可（`YYYY-MM-DD` 形式）。
+
+**ステータス変更（PATCH）**
+```json
+{
+  "status": "IN_PROGRESS"
+}
+```
+
+> `status` は `TODO` / `IN_PROGRESS` / `DONE` のいずれか。
+
+### レスポンス形式
+
+```json
+{
+  "id": 1,
+  "title": "タスクタイトル",
+  "description": "説明",
+  "priority": "HIGH",
+  "dueDate": "2026-06-30",
+  "status": "TODO",
+  "position": 0,
+  "createdAt": "2026-06-05T12:00:00",
+  "updatedAt": "2026-06-05T12:00:00"
+}
+```
+
+---
+
 ## ドキュメント
 
 | ドキュメント | 内容 |
