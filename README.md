@@ -16,20 +16,35 @@
 
 ## 使用技術
 
-**フロントエンド（画面）**
-- React 19.2.6 + TypeScript 6.0.2 + Vite 8.0.12
-- Tailwind CSS 3.4.19
-- Axios 1.16.1（API通信）
-- react-hot-toast 2.6.0（通知）
-- dnd-kit（ドラッグ＆ドロップ・導入予定）
+### フロントエンド
 
+| パッケージ | バージョン | 用途 |
+|---|---|---|
+| React | 19.2.6 | UIフレームワーク |
+| TypeScript | 6.0.2 | 型付きJavaScript |
+| Vite | 8.0.12 | ビルドツール・開発サーバー |
+| Tailwind CSS | 3.4.19 | CSSフレームワーク |
+| Axios | 1.16.1 | API通信 |
+| react-hot-toast | 2.6.0 | 通知 |
+| @dnd-kit/core | 6.3.1 | ドラッグ＆ドロップ |
+| @dnd-kit/utilities | 3.2.2 | ドラッグ＆ドロップユーティリティ |
 
-**バックエンド（サーバー）**
-- Java 25（コンパイル）/ Java 21（Gradle実行）+ Spring Boot 4.0.6
-- Spring Data JPA + Lombok
+### バックエンド
 
-**データベース**
-- PostgreSQL 16
+| 技術 | バージョン | 用途 |
+|---|---|---|
+| Java | 25（コンパイル）/ 21（Gradle実行） | 言語・実行環境 |
+| Spring Boot | 4.0.6 | Webフレームワーク |
+| Spring Data JPA | - | DBアクセス |
+| Lombok | - | ボイラープレート削減 |
+
+### データベース・インフラ
+
+| 技術 | バージョン | 用途 |
+|---|---|---|
+| PostgreSQL | 16 | データベース |
+| pgAdmin | latest | DB管理画面 |
+| Docker Compose | - | コンテナ管理 |
 
 ---
 
@@ -38,7 +53,7 @@
 ### 前提条件
 
 - Java 21 および Java 25 がインストールされていること（`JAVA_HOME` は Java 21 に設定）
-- Node.js 18 以上がインストールされていること
+- Node.js 20 以上（npm 10 以上同梱）がインストールされていること
 - Docker Desktop が起動していること
 
 ### 1. データベースの起動（Docker）
