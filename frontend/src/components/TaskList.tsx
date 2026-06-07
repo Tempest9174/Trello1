@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
-import { DndContext, useDroppable } from '@dnd-kit/core';
+import { DndContext, useDroppable, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import type { DragEndEvent } from '@dnd-kit/core';
 import type { Task, Status } from '../types/Task';
 import { TaskCard } from './TaskCard';
@@ -19,12 +19,14 @@ function DroppableColumn({
   color,
   tasks,
   onClickTask,
+  onDeleteTask,
 }: {
   status: Status;
   label: string;
   color: string;
   tasks: Task[];
   onClickTask: (task: Task) => void;
+  onDeleteTask: (id: number) => void;
 }) {
   const { setNodeRef, isOver } = useDroppable({ id: status });
   return (
@@ -43,7 +45,7 @@ function DroppableColumn({
           <p className="text-gray-300 text-sm text-center py-8">なし</p>
         ) : (
           tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} />
+            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} onDelete={() => onDeleteTask(task.id)} />
           ))
         )}
       </div>
@@ -52,6 +54,9 @@ function DroppableColumn({
 }
 
 export function TaskList() {
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
+  );
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -73,6 +78,11 @@ export function TaskList() {
 
   const handleUpdated = (updated: Task) => {
     setTasks((prev) => prev.map((t) => (t.id === updated.id ? updated : t)));
+    setEditingTask(null);
+  };
+
+  const handleDeleted = (id: number) => {
+    setTasks((prev) => prev.filter((t) => t.id !== id));
     setEditingTask(null);
   };
 
@@ -122,7 +132,7 @@ export function TaskList() {
         </button>
       )}
 
-      <DndContext onDragEnd={handleDragEnd}>
+      <DndContext sensors={sensors} onDragEnd={handleDragEnd}>
         <div className="grid grid-cols-3 gap-6">
           {COLUMNS.map(({ status, label, color }) => (
             <DroppableColumn
@@ -132,6 +142,7 @@ export function TaskList() {
               color={color}
               tasks={tasks.filter((t) => t.status === status)}
               onClickTask={setEditingTask}
+              onDeleteTask={handleDeleted}
             />
           ))}
         </div>
@@ -141,6 +152,7 @@ export function TaskList() {
         <TaskEditModal
           task={editingTask}
           onUpdated={handleUpdated}
+          onDeleted={() => handleDeleted(editingTask.id)}
           onClose={() => setEditingTask(null)}
         />
       )}

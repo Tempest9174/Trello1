@@ -40,4 +40,10 @@ public class TaskController {
                                      @RequestBody @Valid StatusRequest request) {
         return taskService.updateStatus(id, request.status());
     }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteTask(@PathVariable Long id) {
+        taskService.deleteTask(id);
+    }
 }

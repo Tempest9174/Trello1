@@ -1,34 +1,47 @@
-このプロジェクトで使用するポートが利用可能かチェックしてください。
+このプロジェクトで使用するポートを確認し、競合しているプロセスがあれば自動で停止してください。
 
-## チェック対象ポート
+## チェック・停止対象ポート
 
-| サービス | ポート |
-|---------|--------|
-| バックエンド（Spring Boot） | 8080 |
-| フロントエンド（Vite） | 5173 |
-| PostgreSQL（ホスト側） | 5433 |
-| pgAdmin | 5050 |
+| サービス | ポート | 自動停止 |
+|---------|--------|---------|
+| バックエンド（Spring Boot） | 8080 | ✅ する |
+| フロントエンド（Vite） | 5173 | ✅ する |
+| PostgreSQL（ホスト側） | 5433 | ❌ しない（Docker管理） |
+| pgAdmin | 5050 | ❌ しない（Docker管理） |
 
 ## 手順
 
-PowerShell で以下を実行し、各ポートの使用状況を確認する：
+PowerShell で各ポートを確認し、8080・5173 が使用中なら即座に停止する：
 
 ```powershell
-netstat -ano | findstr " :8080 " ; netstat -ano | findstr " :5173 " ; netstat -ano | findstr " :5433 " ; netstat -ano | findstr " :5050 "
+# 8080 の確認・停止
+$p8080 = (Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue).OwningProcess | Select-Object -First 1
+if ($p8080) { Stop-Process -Id $p8080 -Force; Write-Host "8080を停止: PID $p8080" }
+
+# 5173 の確認・停止
+$p5173 = (Get-NetTCPConnection -LocalPort 5173 -ErrorAction SilentlyContinue).OwningProcess | Select-Object -First 1
+if ($p5173) { Stop-Process -Id $p5173 -Force; Write-Host "5173を停止: PID $p5173" }
+
+# 5433・5050 は確認のみ（停止しない）
+$p5433 = (Get-NetTCPConnection -LocalPort 5433 -ErrorAction SilentlyContinue).OwningProcess | Select-Object -First 1
+$p5050 = (Get-NetTCPConnection -LocalPort 5050 -ErrorAction SilentlyContinue).OwningProcess | Select-Object -First 1
 ```
 
-- 出力がない → そのポートは空き（起動OK）
-- PID が表示される → そのポートは使用中
-
-使用中のポートがあれば `tasklist /fi "PID eq <PID番号>"` でプロセス名を確認してください。
-
-結果を以下の形式で日本語で報告してください：
+## 結果の報告形式
 
 ```
-✅ 8080（バックエンド）: 空き
-✅ 5173（フロントエンド）: 空き
-✅ 5433（PostgreSQL）: 空き
-✅ 5050（pgAdmin）: 空き
+✅ 8080（バックエンド）: 空き（起動OK）
+✅ 5173（フロントエンド）: 空き（起動OK）
+✅ 5433（PostgreSQL）: Docker稼働中（正常）
+✅ 5050（pgAdmin）: Docker稼働中（正常）
 ```
 
-使用中の場合は対処方法（プロセスの停止方法）も提示してください。
+停止を行った場合は以下も追記する：
+```
+🔧 8080: PID <番号> を停止しました → 空きになりました
+```
+
+## 注意事項
+
+- 停止対象が Docker や重要なシステムプロセスの場合はユーザーに確認してから停止すること
+- 5433・5050 は絶対に停止しないこと

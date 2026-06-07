@@ -29,9 +29,10 @@ const statusLabel: Record<Status, string> = {
 type Props = {
   task: Task;
   onClick: () => void;
+  onDelete: () => void;
 };
 
-export function TaskCard({ task, onClick }: Props) {
+export function TaskCard({ task, onClick, onDelete }: Props) {
   const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
     id: task.id,
     data: { task },
@@ -48,9 +49,18 @@ export function TaskCard({ task, onClick }: Props) {
       style={style}
       {...listeners}
       {...attributes}
-      className="bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing"
+      className="relative group bg-white rounded-lg border border-gray-200 shadow-sm p-4 hover:shadow-md transition-shadow cursor-grab active:cursor-grabbing"
       onClick={onClick}
     >
+      {!isDragging && (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity text-gray-400 hover:text-red-500 text-lg leading-none"
+        >
+          ×
+        </button>
+      )}
       <div className="flex items-center gap-2 mb-2">
         <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${priorityStyle[task.priority]}`}>
           {priorityLabel[task.priority]}
