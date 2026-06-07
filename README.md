@@ -97,6 +97,39 @@ npm run dev
 
 ---
 
+## ポート一覧
+
+| サービス | ポート | URL |
+|---|---|---|
+| フロントエンド（Vite） | 5173 | http://localhost:5173 |
+| バックエンド（Spring Boot） | 8080 | http://localhost:8080 |
+| PostgreSQL | 5433 | - |
+| pgAdmin | 5050 | http://localhost:5050 |
+
+---
+
+## 開発フロー
+
+```
+① GitHub Issue を作成（gh issue create）
+② Issue 番号を含むブランチを作成
+   git checkout -b feature/#<番号>-<内容>
+③ ブランチ上で実装・コミット・プッシュ
+④ develop への Pull Request を作成
+⑤ CI（lint・build）が通ることを確認
+⑥ マージ → Issue をクローズ
+```
+
+**ブランチ命名規則**
+
+| プレフィックス | 用途 |
+|---|---|
+| `feature/#<番号>-<内容>` | 機能追加 |
+| `fix/#<番号>-<内容>` | バグ修正 |
+| `docs/#<番号>-<内容>` | ドキュメント更新 |
+
+---
+
 ## API仕様
 
 ベースURL: `http://localhost:8080`
@@ -162,3 +195,4 @@ npm run dev
 | [画面遷移・設計書](docs/screen_flow.md) | 画面遷移図・ワイヤーフレーム |
 | [E-R図・データ設計書](docs/er_diagram.md) | テーブル設計・リレーション |
 | [用語解説集](docs/glossary.md) | 技術用語の説明 |
+| [Web筆記テスト 問題・解答](docs/web_test_questions.md) | Web技術の筆記テスト問題と解答メモ |
