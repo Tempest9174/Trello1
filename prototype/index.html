@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>タスク管理 プロトタイプ</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <a href="#/" class="logo">TaskBoard</a>
+    <span class="header-subtitle">プロトタイプ</span>
+  </header>
+
+  <main id="app"></main>
+
+  <!-- カード詳細モーダル -->
+  <div id="card-modal" class="modal-overlay hidden">
+    <div class="modal">
+      <div class="modal-header">
+        <h2 class="modal-title">カード詳細</h2>
+        <button class="btn-icon" id="modal-close">✕</button>
+      </div>
+      <div id="modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ラベル選択モーダル -->
+  <div id="label-modal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">ラベル</h2>
+        <button class="btn-icon" id="label-modal-close">✕</button>
+      </div>
+      <div id="label-modal-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <!-- ラベル作成モーダル -->
+  <div id="label-create-modal" class="modal-overlay hidden">
+    <div class="modal modal-sm">
+      <div class="modal-header">
+        <h2 class="modal-title">ラベルを作成</h2>
+        <button class="btn-icon" id="label-create-close">✕</button>
+      </div>
+      <div id="label-create-body" class="modal-body"></div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
