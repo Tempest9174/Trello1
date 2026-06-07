@@ -7,6 +7,7 @@ import com.taskmanagement.repository.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
@@ -14,6 +15,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class TaskService {
 
     private final TaskRepository taskRepository;
@@ -24,6 +26,7 @@ public class TaskService {
                 .toList();
     }
 
+    @Transactional
     public TaskResponse createTask(TaskRequest request) {
         int nextPosition = (int) taskRepository.count() + 1;
         Task task = Task.builder()
@@ -39,6 +42,7 @@ public class TaskService {
         return TaskResponse.from(taskRepository.save(task));
     }
 
+    @Transactional
     public TaskResponse updateTask(Long id, TaskRequest request) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -50,6 +54,7 @@ public class TaskService {
         return TaskResponse.from(taskRepository.save(task));
     }
 
+    @Transactional
     public TaskResponse updateStatus(Long id, String status) {
         Task task = taskRepository.findById(id)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
@@ -58,8 +63,11 @@ public class TaskService {
         return TaskResponse.from(taskRepository.save(task));
     }
 
+    @Transactional
     public void deleteTask(Long id) {
-        if (!taskRepository.existsById(id)) throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        if (!taskRepository.existsById(id)) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND);
+        }
         taskRepository.deleteById(id);
     }
 }
