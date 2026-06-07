@@ -78,6 +78,20 @@ Issue を作成せずにブランチを切ることは禁止。
 | PostgreSQL（ホスト側） | 5433 | `docker-compose.yml` |
 | pgAdmin | 5050 | `docker-compose.yml` |
 
-- ポートは変更禁止。競合する場合は使用中のプロセスを停止すること
+- ポートは変更禁止。競合が発生した場合は **必ずそのプロセスを停止し、必ずデフォルトポートで起動する**
+- 別のポート番号に変更して起動することは禁止
 - フロントエンドは `strictPort: true` により、5173 が使用中なら自動で別ポートに切り替えず起動エラーになる
 - 起動前に `/check-ports` コマンドで各ポートの空き状況を確認できる
+- サーバーを起動する際は `/start` コマンドを使用すること（ポート解放→起動を自動で行う）
+
+### ポート競合時の対処手順（必須）
+
+```powershell
+# 例: 8080 が競合している場合
+$p = (Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue).OwningProcess | Select-Object -First 1
+if ($p) { Stop-Process -Id $p -Force }
+# → 停止後、必ず 8080 で再起動する
+```
+
+- PostgreSQL（5433）・pgAdmin（5050）は Docker 管理のため停止禁止
+- 停止対象が不明なプロセスの場合はユーザーに確認すること
