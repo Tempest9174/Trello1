@@ -8,9 +8,9 @@ import { TaskForm } from './TaskForm';
 import { TaskEditModal } from './TaskEditModal';
 
 const COLUMNS: { status: Status; label: string; color: string }[] = [
-  { status: 'TODO',        label: '未着手', color: 'bg-gray-100 text-gray-600' },
+  { status: 'TODO', label: '未着手', color: 'bg-gray-100 text-gray-600' },
   { status: 'IN_PROGRESS', label: '進行中', color: 'bg-blue-100 text-blue-700' },
-  { status: 'DONE',        label: '完了',   color: 'bg-emerald-100 text-emerald-700' },
+  { status: 'DONE', label: '完了', color: 'bg-emerald-100 text-emerald-700' },
 ];
 
 function DroppableColumn({
@@ -35,9 +35,7 @@ function DroppableColumn({
       className={`min-h-32 rounded-lg transition-colors ${isOver ? 'bg-blue-50' : ''}`}
     >
       <div className="flex items-center gap-2 mb-3">
-        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>
-          {label}
-        </span>
+        <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${color}`}>{label}</span>
         <span className="text-xs text-gray-400">{tasks.length}</span>
       </div>
       <div className="flex flex-col gap-3">
@@ -45,7 +43,12 @@ function DroppableColumn({
           <p className="text-gray-300 text-sm text-center py-8">なし</p>
         ) : (
           tasks.map((task) => (
-            <TaskCard key={task.id} task={task} onClick={() => onClickTask(task)} onDelete={() => onDeleteTask(task.id)} />
+            <TaskCard
+              key={task.id}
+              task={task}
+              onClick={() => onClickTask(task)}
+              onDelete={() => onDeleteTask(task.id)}
+            />
           ))
         )}
       </div>
@@ -54,9 +57,7 @@ function DroppableColumn({
 }
 
 export function TaskList() {
-  const sensors = useSensors(
-    useSensor(PointerSensor, { activationConstraint: { distance: 8 } })
-  );
+  const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 8 } }));
   const [tasks, setTasks] = useState<Task[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -67,7 +68,9 @@ export function TaskList() {
     axios
       .get<Task[]>('http://localhost:8080/api/tasks')
       .then((res) => setTasks(res.data))
-      .catch(() => setError('タスクの取得に失敗しました。バックエンドが起動しているか確認してください。'))
+      .catch(() =>
+        setError('タスクの取得に失敗しました。バックエンドが起動しているか確認してください。')
+      )
       .finally(() => setLoading(false));
   }, []);
 

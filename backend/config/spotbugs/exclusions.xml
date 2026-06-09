@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<FindBugsFilter
+    xmlns="https://github.com/spotbugs/filter/3.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="https://github.com/spotbugs/filter/3.0.0 https://raw.githubusercontent.com/spotbugs/spotbugs/3.1.0/spotbugs/etc/findbugsfilter.xsd">
+
+    <!--
+        Lombok が生成する getter/setter/builder のフィールドコピーに対する誤検知を除外する。
+        EI_EXPOSE_REP  : getter がミュータブルオブジェクトの参照を直接返す
+        EI_EXPOSE_REP2 : setter がミュータブルオブジェクトの参照を直接格納する
+    -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+        <Class name="~com\.taskmanagement\.entity\..*"/>
+    </Match>
+
+    <!--
+        record 型の DTO は不変なので参照漏洩の心配がないが、
+        SpotBugs が java.time.LocalDate 等に対して誤検知することがあるため除外する。
+    -->
+    <Match>
+        <Bug pattern="EI_EXPOSE_REP,EI_EXPOSE_REP2"/>
+        <Class name="~com\.taskmanagement\.dto\..*"/>
+    </Match>
+
+</FindBugsFilter>
